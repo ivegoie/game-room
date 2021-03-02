@@ -8,7 +8,7 @@ const Game = ({ name, released, image, id }) => {
   return (
     <StyledGame key={id}>
       <h3>{name}</h3>
-      <p>{released}</p>
+      <p>Released Date: {released}</p>
       <img src={image} alt={name} />
     </StyledGame>
   );
