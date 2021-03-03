@@ -7,41 +7,68 @@ import { motion } from "framer-motion";
 // REDUX
 import { useSelector } from "react-redux";
 
-const GameDetail = () => {
+// REACT ROUTER
+import { useHistory } from "react-router-dom";
+
+// UTIL
+import { smallerImage } from "../util";
+
+const GameDetail = ({ pathID }) => {
+  // eslint-disable-next-line
+  const numberPathID = parseInt(pathID);
+  const history = useHistory();
+  // EXIT DETAIL
+  const exitDetailHandler = (e) => {
+    const element = e.target;
+    if (element.classList.contains("shadow")) {
+      document.body.style.overflow = "auto";
+      history.push("/");
+    }
+  };
+
   // DATA
-  const { screenshots, game } = useSelector((state) => state.detail);
+  const { screenshots, game, isLoading } = useSelector((state) => state.detail);
   return (
-    <section>
-      <CardShadow>
-        <Detail>
-          <Stats>
-            <div className="rating">
-              <h3>{game.name}</h3>
-              <p>Rating: {game.rating}</p>
-            </div>
-            <Info>
-              <h3>Platforms</h3>
-              <Platforms>
-                {game.platforms.map((data) => (
-                  <h3 key={data.platform.id}>{data.platform.name}</h3>
-                ))}
-              </Platforms>
-            </Info>
-          </Stats>
-          <Media>
-            <img src={game.background_image} alt="screenshot" />
-          </Media>
-          <Description>
-            <p>{game.description_raw}</p>
-          </Description>
-          <Gallery>
-            {screenshots.results.map((image) => (
-              <img src={image.image} key={image.id} alt="screenshot" />
-            ))}
-          </Gallery>
-        </Detail>
-      </CardShadow>
-    </section>
+    <>
+      {!isLoading && (
+        <CardShadow className="shadow" onClick={exitDetailHandler}>
+          <Detail>
+            <Stats>
+              <div className="rating">
+                <h3>{game.name}</h3>
+                <p>Rating: {game.rating}</p>
+              </div>
+              <Info>
+                <h3>Platforms</h3>
+                <Platforms>
+                  {game.platforms.map((data) => (
+                    <h3 key={data.platform.id}>{data.platform.name}</h3>
+                  ))}
+                </Platforms>
+              </Info>
+            </Stats>
+            <Media>
+              <img
+                src={smallerImage(game.background_image, 1280)}
+                alt="screenshot"
+              />
+            </Media>
+            <Description>
+              <p>{game.description_raw}</p>
+            </Description>
+            <Gallery>
+              {screenshots.results.map((image) => (
+                <img
+                  src={smallerImage(image.image, 1280)}
+                  key={image.id}
+                  alt="screenshot"
+                />
+              ))}
+            </Gallery>
+          </Detail>
+        </CardShadow>
+      )}
+    </>
   );
 };
 
@@ -53,6 +80,7 @@ const CardShadow = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 10;
   &::-webkit-scrollbar {
     width: 0.5rem;
   }
